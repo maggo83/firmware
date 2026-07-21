@@ -68,17 +68,20 @@ async def view_ident(*a):
     # show the XPUB, and other ident on screen
     import callgate, stash
 
-    msg = ""
+    warning = ""
     if stash.bip39_passphrase:
-        msg += 'BIP-39 passphrase is in effect.\n\n'
+        warning = 'BIP-39 passphrase is in effect.\n\n'
     elif pa.tmp_value:
-        msg += 'Temporary seed is in effect.\n\n'
+        warning = 'Temporary seed is in effect.\n\n'
 
+    if warning:
+        await ux_show_story(warning)
+
+    my_xfp = settings.get('xfp', 0)
+    await show_identity_bitsquiggle(my_xfp)
+
+    msg = ""
     tpl = '''\
-Master Key Fingerprint:
-
-  {xfp}
-
 USB Serial Number:
 
   {serial}
@@ -87,10 +90,8 @@ Extended Master Key:
 
 {xpub}
 '''
-    my_xfp = settings.get('xfp', 0)
     xpub = settings.get('xpub', None)
     msg += tpl.format(xpub=(xpub or '(none yet)'),
-                      xfp=xfp2str(my_xfp),
                       serial=version.serial_number())
 
     bn = callgate.get_bag_number()
@@ -108,6 +109,33 @@ Extended Master Key:
         # show the QR
         from ux import show_qr_code
         await show_qr_code(xpub, False)
+
+
+async def show_identity_bitsquiggle(xfp):
+    """Compose the COLDCARD fingerprint label with a canonical B/W raster."""
+    from bitsquiggle32_renderer_framebuffer import (
+        BLACK_AND_WHITE, PIXEL_WIDTH, pixels, render_raster,
+    )
+    from glob import dis
+    from ux import PressRelease
+    from zevvpeep import FontTiny
+
+    def oled_color(color):
+        if color == '#000000':
+            return 0
+        if color == '#ffffff':
+            return 1
+        raise ValueError('COLDCARD BitSquiggles requires black-and-white colors')
+
+    grid = pixels(xfp, BLACK_AND_WHITE)
+
+    dis.clear()
+    dis.text(None, 0, 'Master Fingerprint', FontTiny)
+    dis.text(None, 9, xfp2str(xfp), FontTiny)
+    render_raster(dis.dis, grid, x=(dis.WIDTH - PIXEL_WIDTH * 2) // 2, y=19,
+                  scale=2, color_mapper=oled_color)
+    dis.show()
+    await PressRelease().wait()
 
 
 async def show_settings_space(*a):

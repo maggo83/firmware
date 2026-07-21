@@ -29,6 +29,7 @@ wants to understand why it's safe to put your moneys into Coldcard.
 - [`bitcoin-core-usage.md`](bitcoin-core-usage.md) How to use with Bitcoin Core.
 - [`bitcoin-core2of2desc.md`](bitcoin-core2of2desc.md) Airgapped 2-of-2 multisig with Bitcoin Core using descriptors.
 - [`limitations.md`](limitations.md) Documented limitations, policy choices, and TODO items.
+- [`bitsquiggles-identity-view.md`](bitsquiggles-identity-view.md) BitSquiggles `View Identity` integration.
 - [`paperwallet.pdf`](paperwallet.pdf) Example paper wallet template file.
 - [`menu-tree.txt`](menu-tree.txt) Dump of the menu system. Incomplete, may be out of date.
 

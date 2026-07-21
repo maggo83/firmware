@@ -6,6 +6,8 @@ freeze_as_mpy('', [
 	'address_explorer.py',
 	'auth.py',
 	'backups.py',
+	'bitsquiggle32.py',
+	'bitsquiggle32_renderer_framebuffer.py',
 	'block_height.py',
 	'callgate.py',
 	'ccc.py',
