@@ -9,3 +9,9 @@ def test_renderer_reexports_public_core_surface(sim_eval):
         " and 'render_raster' in %s.__all__"
     ) % (renderer, core, core, renderer)
     assert sim_eval(expression) == "True"
+
+
+def test_identity_uses_display_fingerprint_byte_order(sim_eval):
+    # Internal 0x2ae94002 is displayed as 0240E92A and must render canonical input 0x0240e92a.
+    expression = "hex(__import__('actions')._identity_bitsquiggle_input(0x2ae94002))"
+    assert sim_eval(expression) == "0x240e92a"

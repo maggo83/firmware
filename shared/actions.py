@@ -111,6 +111,13 @@ Extended Master Key:
         await show_qr_code(xpub, False)
 
 
+def _identity_bitsquiggle_input(xfp):
+    # COLDCARD stores the fingerprint integer in little-endian order; BitSquiggles consumes the
+    # same big-endian 32-bit value shown by xfp2str().
+    from utils import swab32
+    return swab32(xfp)
+
+
 async def show_identity_bitsquiggle(xfp):
     """Compose the COLDCARD fingerprint label with a canonical B/W raster."""
     from bitsquiggle32_renderer_framebuffer import (
@@ -127,7 +134,7 @@ async def show_identity_bitsquiggle(xfp):
             return 1
         raise ValueError('COLDCARD BitSquiggles requires black-and-white colors')
 
-    grid = pixels(xfp, BLACK_AND_WHITE)
+    grid = pixels(_identity_bitsquiggle_input(xfp), BLACK_AND_WHITE)
 
     dis.clear()
     dis.text(None, 0, 'Master Fingerprint', FontTiny)

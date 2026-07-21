@@ -13,10 +13,17 @@ from bitsquiggle32_renderer_framebuffer import (
 )
 ```
 
-`pixels(xfp, BLACK_AND_WHITE)` remains the canonical identity-to-raster
-operation. `render_raster(dis.dis, grid, ...)` only paints that grid using the
-SSD1306 framebuffer's `fill_rect` interface. The OLED color mapper converts
-the canonical `#000000` and `#ffffff` colors into the framebuffer's `0` and
-`1` values.
+COLDCARD stores its fingerprint integer in little-endian order, while
+`xfp2str()` displays the fingerprint's four bytes in standard big-endian order.
+The integration byte-swaps that internal integer before calling
+`pixels(bits, BLACK_AND_WHITE)`, so the numeric value encoded by BitSquiggles
+matches the eight displayed hexadecimal digits. For example, internal
+`0x2ae94002` is displayed as `0240E92A` and rendered as canonical input
+`0x0240e92a`.
+
+`render_raster(dis.dis, grid, ...)` only paints the canonical grid using the
+SSD1306 framebuffer's `fill_rect` interface. The OLED color mapper converts the
+canonical `#000000` and `#ffffff` colors into the framebuffer's `0` and `1`
+values.
 
 The optional LVGL renderer is not frozen or imported on COLDCARD.
